@@ -1,0 +1,139 @@
+\documentclass[
+11pt, % The default document font size, options: 10pt, 11pt, 12pt
+oneside, % Two side (alternating margins) for binding by default, uncomment to switch to one side
+english, % ngerman for German
+singlespacing, % Single line spacing, alternatives: onehalfspacing or doublespacing
+%draft, % Uncomment to enable draft mode (no pictures, no links, overfull hboxes indicated)
+%nolistspacing, % If the document is onehalfspacing or doublespacing, uncomment this to set spacing in lists to single
+%liststotoc, % Uncomment to add the list of figures/tables/etc to the table of contents
+%toctotoc, % Uncomment to add the main table of contents to the table of contents
+%parskip, % Uncomment to add space between paragraphs
+%nohyperref, % Uncomment to not load the hyperref package
+headsepline, % Uncomment to get a line under the header
+%chapterinoneline, % Uncomment to place the chapter title next to the number on one line
+%consistentlayout, % Uncomment to change the layout of the declaration, abstract and acknowledgements pages to match the default layout
+]{MastersDoctoralThesisV2} % The class file specifying the document structure
+
+\usepackage[utf8]{inputenc} % Required for inputting international characters
+\usepackage[T1]{fontenc} % Output font encoding for international characters
+\usepackage{todonotes}
+\usepackage{mathpazo} % Use the Palatino font by default
+\usepackage{adjustbox} % Resize table
+\usepackage[backend=bibtex,style=authoryear,natbib=true]{biblatex} % Use the bibtex backend with the authoryear citation style (which resembles APA)
+
+\addbibresource{thesis.bib} % The filename of the bibliography
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{rotating}
+\usepackage[autostyle=true]{csquotes} % Required to generate language-dependent quotes in the bibliography
+\usepackage{glossaries}
+\usepackage[T1]{fontenc}
+\usepackage{comment}
+\makeglossaries
+\loadglsentries{glossary}
+
+
+
+\title{ mitochondrial ... 
+\newline }
+
+%Identificazione di varianti genetiche responsabili di abortività spontanea idiopatica attraverso lo studio di sequenze genomiche embrionali.
+
+\author{ }
+\date{}
+
+
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+{\scshape\large\normalfont\bfseries Università degli Studi di Napoli Federico II \par}
+ \vspace{0.7cm} 
+ \includegraphics[width=0.30\textwidth]{Fig/logo.png}
+ \par
+ \vspace{0.5cm}
+\hspace{2cm}
+{\scshape\large\normalfont Scuola Politecnica e delle Scienze di Base
+\newline
+Area Didattica di Scienze Matematiche Fisiche e Naturali
+ \par}
+ \vspace{0.5cm}
+{\scshape\large\normalfont Corso di Laurea Magistrale in Biologia curriculum biomolecolare
+ \par}
+ \vspace{0.5cm} 
+{\scshape\large\normalfont Tesi sperimentale in Genomica
+ \par}
+  \vspace{0.8cm}
+{\scshape\large\normalfont\bfseries\textit mitochondrial qualcosa
+ \par}
+  \vspace{0.8cm}
+{\scshape\large\normalfont\bfseries  Identificazione di varianti genetiche mitocondriali e altre cose 
+ \par} 
+\vspace{2cm} 
+\begin{minipage}{0.45\textwidth}
+{\scshape\normalfont\large\bfseries Relatore:}\\
+{\scshape\normalfont\large Dott.ssa Serena Aceto} \\ 
+{\scshape\normalfont\large\bfseries Correlatore:} \\
+{\scshape\normalfont\large Dott.ssa Vincenza Colonna}\\
+\end{minipage}
+\hspace{2.5cm}
+\begin{minipage}{0.25\textwidth}
+{\scshape\normalfont\large\bfseries Candidato:}\\
+ {\scshape\normalfont\large Giuliana D'Angelo \\
+ Matricola } 
+\end{minipage}
+
+\vfill
+\centering
+\vspace{0.48cm} 
+{\scshape\Large\normalfont A.A. 2020/2021}
+
+\end{titlepage}
+%\maketitle
+%----------------------------------------------------------------------------------------
+%	LIST OF CONTENTS/FIGURES/TABLES PAGES
+%----------------------------------------------------------------------------------------
+
+\tableofcontents % Prints the main table of contents
+
+%\listoffigures % Prints the list of figures
+
+%\listoftables % Prints the list of tables
+
+
+%----------------------------------------------------------------------------------------
+
+\include{chapters/Introduction}
+
+\include{chapters/results}
+
+\include{Chapters/discussion}
+
+\include{Chapters/methods}
+
+\newline
+
+ \ref{fig:bmi} .\newline
+
+ \ref{fig:pipeline_screening}).\newline
+
+ \ref{fig:aneuploidies_CHG}).\newline
+
+
+
+
+\printglossary
+\begin{acknowledgements}
+\addchaptertocentry{\acknowledgementname}
+\end{acknowledgements}
+
+
+
+
+
+
+
+\end{document}
+
+

@@ -1,0 +1,96 @@
+% Chapter results
+\chapter{Results} % Main chapter title
+\label{Chapter3} % For referencing the chapter elsewhere, use \ref{Chapter3}
+%----------------------------------------------------------------------------------------
+% Define some commands to keep the formatting separated from the content
+\newcommand{\keyword}[1]{\textbf{#1}}
+\newcommand{\tabhead}[1]{\textbf{#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\file}[1]{\texttt{\bfseries#1}}
+\newcommand{\option}[1]{\texttt{\itshape#1}}
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Section
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\chapter{Results}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Section 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Description of the data set}
+Data consists of a database of medical records from interviews of 45 recurrent pregnancy loss (RPL), 74 first pregnancy loss (FPL), and 131 Voluntary Termination of pregnancy (VTP) with no previous miscarriages. The large majority of cases is of European origin (82.7\%, African 9.6\%, Asian 7.6\%).\newline
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Section 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Pipeline for the identification of mitochondrial variants}
+\subsection{FREEBAYES}
+The sequencing pipeline produces sequence data in the \gls{fastq} format that constitute the raw sequence data and can be used to perform the analysis from scratch and customized pipelines on \gls{high performance computing} machines. Figure \ref{fig:align-ref-vc} provides an overview of the pipeline used in this study.\newline
+
+I performed the \textbf{alignment} of the raw sequence data in form of \gls{reads} against the most recent version of the human reference Genome (GRChg38.p12, \cite{rosenbloom2015ucsc}) using \textsc{bwa-mem} (\cite{li2013aligning}) and \textsc{samtools} (\cite{li2009sequence}). The alignment produces files in the \gls{bam} format that provide information on the quality of the alignemnt and enable some quality controls. In our data set XX\% of reads were correctly aligned to the reference genome. \newline
+Before proceeding to the next step I used \textsc{sambamba} (\cite{tarasov2015sambamba}) to \textbf{refine} the data and remove PCR duplicates, i.e. reads and they came from the same DNA fragment that bias variant detection through increased homozygosity.\newline
+
+I used the refined bam file to perform \textbf{variant calling} using \textsc{freebayes} (\cite{garrison2012haplotype}) that produces data in the \gls{vcf} format. The variant calling is the process of identification of variants from sequence data, where variants are chunks of sequence that differ from the reference genome. Genetic variants are classified as single nucleotide variants (SNVs), small insertions and deletions (indels), and structural variants (SVs, large genomic rearrangements). In addition to call variants, the software specifies in the pipeline the haploid mitochondrial DNA, through a specific option. \newline
+
+
+
+%At this stage, for each samples in a specific format called BAM, with each BAM we are able to do a Variant Calling using another bioinformatics software called FREEBAYES developed by our collaborator Erik Garrison.\newline
+
+%This software, like the word says, calls the variants that differ from the reference genome and for variants we mean each base of genome that is not like in the reference genome. 
+%Another positive thing is that the software can specify whether our samples are homozygous or heterozygous at those sites and for those alleles,  all supported by a likelihood score for each site.\newline
+
+The final step is a second round of \textbf{refining} that includes three steps. 
+\begin{itemize}
+    \item I used \textsc{vcffilter} (\cite{vcflib}) to filter variants for \gls{quality score}(QUAL)>30. The QUAL is an estimate of how likely it is to observe a call by chance, and a value of 30 corresponds to 1\% probability of having an incorrect genotype.
+    \item I used \textsc{vt} (\cite{tan2015unified}) to do the normalization that consist of two parts: parsimony and left alignment. Parsimony is the representation of a variant in as few nucleotides as possible without reducing the length of any allele to 0. Left alignment is the shift of the start position of a variant to the left till it is no longer possible to do so (Figure \ref{fig:vtNorm}) (\cite{tan2015unified}).
+    \item I used \textsc{vt} to deconstruct multiallelic variants in a VCF to allow for allelic comparisons between call sets
+    \newline
+    
+Overall, the variant calling with \textsc{freebayes} identified 795 variant sites. In alcune posizioni si nota la resenza di più varianti, ciò è dovuto alla presenza del D-LOOP, ovvero la zona del DNA mitocondriale più variabile. 
+
+\subsection{MITY}
+\item Heteroplasmy \newline
+%To identify the possible presence of heteroplasmy I used \textsc{Mity}.
+To identify heteroplasmy I used \textsc{mity} on bam files of our samples, and give as output a table with value for each site.
+%Mity is a bioinformatic analysis pipeline designed to call mitochondrial SNV and INDEL variants from Whole Genome Sequencing (WGS) data and it can also identify very low-heteroplasmy variants, even <1\% heteroplasmy when there is sufficient read-depth (eg >1000x).
+The value can assume value in a range from 0 to 1, a site is heteroplasmic if the value is < 0.1 \cite{}.
+Nei nostri campioni l'eteroplasmia è stata riscontrata per alcuni siti, in accordo con il genotipo: 
+i siti riscontrabili di eteroplasmia hanno un genotipo 0/1  mentre i siti in cui non è riscontrata sono 1/1 e 0/0.\newline
+
+
+%(plot) 
+
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Subsection 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Variant Effect Predictor}
+Once the genetic variants are identified, the following challenge is to understand their functional consequences, i.e.the effect that they produce on the gene and if they cause a specific phenotype. I have used \textsc{variant effect predictor} (\textsc{vep}, \cite{mclaren2016ensembl}) provided by Ensembl (\cite{howe2020ensembl}) to annotate the genetic variant discovered in the six GREP samples. \textsc{vep} is currently the most updated and comprehensive toolset for the analysis, annotation, and prioritization of genomic variants in coding and non-coding regions based on an extensive collection of genomic annotations. \textsc{vep} can determine the effect of variants (SNPs, insertions, deletions, CNVs or structural variants) on genes, transcripts, and protein sequence, as well as regulatory regions.\newline
+\subsection{script}
+Lo script di python analizza il file VCF prodotto dal Variant Calling e annota i possibili effetti delle varianti prendendo le informazioni dall'API di VEP(ensembl). L'output è un vcf in cui vengono annotati principalmente due criteri : l'impact e lo score associato. 
+L'impact è suddiviso in quattro categorie in base alla gravità dell'effetto annotato.
+Le quattro categorie sono : \newline
+- Modifier\newline
+- Low\newline
+- Moderate\newline
+- High\newline
+
+Lo score è un valore numerico associato all'impact e varia in un range da un minimo di 10 ad un massimo di 36.
+Nei nostri campioni ho rilevato le categorie modifier, low e moderate con uno score associato massimo del valore di 25. 
+Dunque, l'effetto deleterio con impatto maggiore l'ho riscontrato in 72 varianti, le quali hanno un impact MODERATE ed uno score di 25. \newline-inserire Varianti associate a malattie-\newline
+\section{Frequencies Analysis}
+Come ulteriore analisi, ho voluto calcolare la frequenza delle varianti rilevate da VEP al fine di cercare varianti rare, quindi con frequenza < 0,01
+La frequenza minima che ho trovato nei campioni è 0,083, quindi non ... come variante rara.
+
+\subsection{vcftools}
+\section{HGDP}
+\subsection{Variant Calling}
+\subsection{Frequencies analysis}
+\section{Haplogroup}
+
+\subsection{Haplogrep}

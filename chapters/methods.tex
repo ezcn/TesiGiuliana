@@ -1,0 +1,104 @@
+\chapter{methods}
+
+\section{Data and sample collection.} Study material consisted in blood and and product of conception from the mothers and was collected at the Section Unit of Obstetrics and Gynecology at the University Hospital of Ferrara YEARFROM-YEARTO VALENTINA. The study was approved by the ethical committee of the Emilia-Romagna (REFERENCE NUMBER  FOR APPROVAL)and was carried out in compliance with the Helsinki Declaration. All participants provided written informed consents prior to recruitment. All patient data were anonymized right after data and sample collection.\\ 
+
+Data were cleaned and refined (e.g.trimming of white spaces, correction of typing errors, harmonization of values within fields, and similar) using OpenRefine (\url{https://github.com/OpenRefine/OpenRefine}), a standalone open source application for data cleanup and transformation (\href{https://en.wikipedia.org/wiki/OpenRefine}{wiki}).\\
+
+Summary statistics of the data were calculated and represented using the packages \textit{ggplot} (\cite{ggplot2}), \textit{tidyverse} (\cite{wickham2019welcome}), \textit{stats} (\cite{statsR}) and \textsc{r} (\cite{R}). All the code is availabe on the git repository of the project (\url{https://github.com/ezcn/grep}) 
+
+\section{Screening for chromosomal aneuploidies}
+
+This part was performed by our collaborators at the University of Ferrara and Merigen Reserach s.r.l. In brief DNA was extracted from chorionic villi of the product of conception using standard protocols. A rapid screening of sex and numerical anomalies for chromosomes 13, 15, 16, 18, 21, 22 and X was carried out with the miscarriage DNA samples performing quantitative PCR assays. Samples that resulted euploid for these chromosomes were further analized by Comparative Genomic Hybridization (Agilent SurePrint G3) and low coverage sequencing of randomly amplified genomic regions
+
+
+\section {Whole-genome sequence analyses}
+
+%\subsection{Sequencing}
+%Sequencing was done through a service provider (Macrogen s.r.l). In particular, libraries for sequencing were prepared using the Illumina TruSeq DNA PCR-free Library (insert size 350bp) and samples were sequenced at 30X mapped (~110Gb) 150bp PE on HiSeqX. Data were released in as fastq files. 
+
+%\subsection{Alignment with reference.} Reads in the fastq file were aligned against the reference genome GRChg38.p12 (\cite{rosenbloom2015ucsc}) using \textsc{bwa} and \textsc{samtools}. \textsc{bwa} (\url{https://github.com/lh3/bwa}) "is a software package for mapping low-divergent sequences against a large reference genome, such as the human genome." Of the three algorithms available in \textsc{bwa} we used \textsc{bwa-mem}  that is generally recommended to analyze 70-100bp Illumina reads. 
+
+%For each sample, the following command line takes in input fastq file (paired-end) and gives as output a raw-bam file. 
+
+%\begin{verbatim}
+~/bin/bwa mem -t 16 -R "@RG\tID:$idsample\tSM:$idsample" \
+/mpbastudies3/IMMA/hg38/hg38.p12.fa \ 
+/mpbastudies3/181113_Vincenza-Colonna/$namedir/$nameflgz1 \ 
+/mpbastudies3/181113_Vincenza-Colonna/$namedir/$nameflgz2 | \ 
+/mpba0/mpba-sw/samtools view -b - > \
+/mpbastudies3/IMMA/samples/%$idsample.raw.bam
+%\end{verba
+  
+
+
+\textsc{samtools} (\url{https://github.com/samtools/samtools}) is a set of utilities for interacting with and post-processing short DNA sequence read alignments in the SAM (Sequence Alignment/Map), BAM (Binary Alignment/Map) and CRAM formats (\href{https://en.wikipedia.org/wiki/SAMtools}{wiki}). \newline
+We have used this software downstream \textsc{bwa-mem} for obtain the BAM from fastq. \newline
+
+\textbf{Remove PCR duplicate.} During PCR the machine introduces a several PCR duplicate in our sequence, for remove them we have used SAMbamba.\newline
+
+SAMbamba (\url{https://github.com/biod/sambamba}) is a high performance highly parallel robust and fast tool (and library), written in the D programming language, for working with SAM and BAM files.Current functionality is an important subset of samtools functionality, including view, index, sort, markdup, and depth (\href{https://github.com/biod/sambamba#introduction}{git}).We have used the function markdup to remove PCR duplicates. \newline
+
+\begin{verbatim}
+~/bin/sambamba markdup -t 8 -p  \
+--tmpdir /scratch --overflow-list-size 500000 \
+/mpbastudies3/IMMA/samples/${idflrbam}.raw.sorted.bam \
+/mpbastudies3/IMMA/samples/${idflrbam}.bam    
+\end{verbatim}
+
+The command line takes in input a raw version of the BAM file for each sample and gives us as output the BAM file without PCR duplicates. \newline
+
+\textbf{VariantCalling.} Is the process that allows us to identifies sites that differ from the reference for each sample. I have choose \textsc{MITY} (\cite{puttick2019mity}) a pipeline for detecting and interpreting heteroplasmic SNVs and INDELs in the mitochondrial genome using WGS data.Mity is a bioinformatic analysis pipeline designed to call mitochondrial SNV and INDEL variants from Whole Genome Sequencing (WGS) data and it can also identify very low-heteroplasmy variants, even <1\% heteroplasmy when there is sufficient read-depth (eg >1000x). Mity  takes as input bam files and give as output a table with value for each site. The option I used is -mitycall. \textsc{MITY} is based on the \textsc{freebayes} algorithm (\url{https://github.com/ekg/freebayes}) that is a Bayesian genetic variant detector designed to find small polymorphisms, specifically SNPs (single-nucleotide polymorphisms), indels (insertions and deletions), MNPs (multi-nucleotide polymorphisms), and complex events (composite insertion and substitution events) smaller than the length of a short-read sequencing alignment (\href{https://github.com/ekg/freebayes}{git}).
+To find heteroplasmy in our saple, I used Mity.
+Mity can identify very low-heteroplasmy variants, even <1\% heteroplasmy when there is sufficient read-depth (eg >1000x). \newline
+
+\begin{verbatim}
+/lustrehome/giuliana/anaconda3/bin/mity call --reference hg38 \ --normalise /lustre/home/enza/grep/bam/$1.bam --out-folder-path \ /lustrehome/giuliana/mity/mitycall/ && touch \ /lustrehome/giuliana/error/$1.mitycall_ok \
+\end{verbatim}
+For use this command line is necessary the reference genome (hg38.p12) in fasta format and a BAM for each sample. \newline
+\begin{verbatim}
+/lustrehome/giuliana/anaconda3/bin/mity report \ /lustrehome/giuliana/mity/mitycall/$1.mity.vcf.gz --out-folder-path \ /lustrehome/giuliana/mity/mitycall/mityreport/ && touch \ /lustrehome/giuliana/error/$1.mitycall_ok \
+\end{verbatim}
+
+
+\textbf{Compress and indexing.} When a file was generated is necessary do a compressing and indexing for each one. \newline
+
+Bgzip (\url{https://www.htslib.org/doc/bgzip.html#DESCRIPTION}) compresses files into a series of small (less than 64K) 'BGZF' blocks. This allows indexes to be built against the compressed file and used to retrieve portions of the data without having to decompress the entire file (\href{https://www.htslib.org/doc/bgzip.html#DESCRIPTION}{wiki}). \newline 
+
+%\begin{verbatim}
+%~/bin/bgzip /mpbastudies3/IMMA/samples/vcf/${idsample}.vcf > \
+%/mpbastudies3/IMMA/samples/vcf/${idsample}.vcf.gz
+%\end{verbatim}
+
+The command line take in input the output (VCF) from variant calling and give us the compressed file. \newline 
+
+%Tabix (\url{https://www.htslib.org/doc/tabix.html}) indexes a TAB-delimited genome position file in.tab.bgz and creates an index file.\newline
+
+%\begin{verbatim}
+%~/bin/tabix -p vcf /mpbastudies3/IMMA/samples/vcf/${id}.${chr}.vcf.gz 
+%\end{verbatim}
+
+The command line take in input the compressed file from BGZIP and give the indexed one.\newline
+
+\textbf{Variant Effect Predictor.}  VEP (\url{https://grch37.ensembl.org/info/docs/tools/vep/index.html}) determines the effect of your variants (SNPs, insertions, deletions, CNVs or structural variants) on genes, transcripts, and protein sequence, as well as regulatory regions.
+Simply input the coordinates of your variants and the nucleotide changes to find out the:
+\begin{itemize}
+    \item Alleles, Genes and Transcripts affected by the variants
+    \item Location of the variants (e.g. upstream of a transcript, in coding sequence, in non-coding RNA, in regulatory regions)
+    \item Consequence of your variants on the protein sequence (e.g. stop gained, missense, stop lost, frameshift)
+    \item Known variants that match yours, and associated minor allele frequencies from the 1000 Genomes Project
+    \item  SIFT and PolyPhen-2 scores for changes to protein sequence
+\end{itemize}
+\newline
+This software takes in input a final version of the VCF (filtered) and gives to us an annotated version with all the parameters written in the command-line. \newline
+
+\begin{verbatim} /bin/singularity exec -B /lustre/home/enza -B /lustrehome/giuliana /lustre/home/enza/biocontainers/vep100_CADD.img vep --af_1kg --af_gnomad --appris --biotype --buffer_size 5000 --check_existing --distance 5000 --fork 4 --minimal --polyphen b --pubmed --regulatory --sift b --species homo_sapiens --symbol --tsl --cache --dir_cache /lustre/home/enza/biocontainers/vepcache --offline --tab --variant_class -i /lustrehome/giuliana/mity/mitycall/mergedfrombam/ALL2.mity.vcf -o /lustrehome/giuliana/mity/mitycall/mergedfrombam/ALL2.mity.vep.tab
+\end{verbatim}\\
+
+
+\subsection{Haplogroup determination}
+HaploGrep 2 supports the direct import of VCF files, one of the current standard formats for genetic data.
+Haplogrep requires Java 8 and works on Windows, Linux and Mac. and gives to us a text file with all the parameters written in the command line. \newline
+
+\begin{verbatim} java -jar haplogrep-2.1.25.jar --in /home/obilab/giuliana/samples_mt/ALLsamples.mity.filt.vcf.gz --format vcf --out ALLsamples_haplogroups.txt \end{verbatim}\\
+\textbf{}
+
