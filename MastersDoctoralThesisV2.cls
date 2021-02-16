@@ -80,7 +80,7 @@
 		\fi
 		\interlinepenalty\@M%
 		\chapterfont #1\par\nobreak 
-68
+
 
 		\chapterbelowskip
 	}

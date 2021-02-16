@@ -256,7 +256,7 @@ After exploring variation in the mitochondrial genome, I have analyzed variation
 In GO I found 1,384 genes involved in mitochondrial process. 
 
 I then run the \textsc{VEP} analysis to annotate the 766,845 variants found in the 1,384 genes that are presents in the ten genomes of the embryos and the results are summarized in Figure (\ref{fig:mostsevereconsequence}), stratified by four categories of impact: High, Modifier, Moderate, and Low.
-The majority of variants (NUMERO ESATTO) are intronic with modifier impact. There are 6X variants with moderate effect and nine variants with high impact.  
+The majority of variants are intronic with modifier impact. There are 6X variants with moderate effect and nine variants with high impact.  
 Among the variants with high impact the most frequent type is splice acceptor, followed by splice donor and frameshift (Table \ref{tab:MostSevereConsequence}). 
  
 
@@ -273,10 +273,10 @@ Among the variants with high impact the most frequent type is splice acceptor, f
 \caption{High consequence}
 \label{tab:MostSevereConsequence}
 \centering
-\begin{adjustbox}{\textwidth}
-\begin{tabular}{c c c c c c c}
+\begin{adjustbox}{width=1\textwidth}
+\begin{tabular}{c c c c c}
 \toprule
- \tabhead{Location} & \tabhead{Variation Allele}  & \tabhead{Symbol} & \tabhead{consequence} & \tabhead{Existing variation} \\
+\tabhead{Location} & \tabhead{Variation Allele}  & \tabhead{Symbol} & \tabhead{consequence} & \tabhead{Existing variation} \\
 \midrule
 chr10:133554659 & A/G &  CYP2E1 & non coding transcript variant & rs2149616 \\                                 
 chr6:36986144 &  G/- &  MTCH1 & frameshift variant & rs35538959 \\                              
@@ -299,6 +299,7 @@ chr14:70049036 & T/- &  SLC8A3 & frameshift variant & NA \\
 \begin{table}
 \caption{high impact genotypes}
 \label{tab.high impact genotypes}
+\begin{adjustbox}{width=1\textwidth}
 \centering
 \begin{tabular}{c c c c c c c c c c c c}
 \toprule
@@ -314,6 +315,7 @@ rs2781646 & 1   &   0    &  0   &   1   &   0   &   0   &   1   &   0  & 0   &  
 
 \bottomrule\\
 \end{tabular}
+\end{adjustbox}
 \end{table}
 }
 
