@@ -1,6 +1,6 @@
 \chapter{Methods}
 
-\section{Data and sample collection.} Study material consisted in blood and and product of conception from the mothers and was collected at the Section Unit of Obstetrics and Gynecology at the University Hospital of Ferrara YEARFROM-YEARTO VALENTINA. The study was approved by the ethical committee of the Emilia-Romagna (REFERENCE NUMBER  FOR APPROVAL)and was carried out in compliance with the Helsinki Declaration. All participants provided written informed consents prior to recruitment. All patient data were anonymized right after data and sample collection.\\ 
+\section{Data and sample collection.} Study material consisted in blood and and product of conception from the mothers and was collected at the Section Unit of Obstetrics and Gynecology at the University Hospital of Ferrara. The study was approved by the ethical committee of the Emilia-Romagna and was carried out in compliance with the Helsinki Declaration. All participants provided written informed consents prior to recruitment. All patient data were anonymized right after data and sample collection.\\ 
 
 Data were cleaned and refined (e.g.trimming of white spaces, correction of typing errors, harmonization of values within fields, and similar) using OpenRefine (\url{https://github.com/OpenRefine/OpenRefine}), a standalone open source application for data cleanup and transformation (\href{https://en.wikipedia.org/wiki/OpenRefine}{wiki}).\\
 
@@ -23,8 +23,8 @@ This part was performed by our collaborators at the University of Ferrara and Me
 %\begin{verbatim}
 ~/bin/bwa mem -t 16 -R "@RG\tID:$idsample\tSM:$idsample" \
 /mpbastudies3/IMMA/hg38/hg38.p12.fa \ 
-/mpbastudies3/181113_Vincenza-Colonna/$namedir/$nameflgz1 \ 
-/mpbastudies3/181113_Vincenza-Colonna/$namedir/$nameflgz2 | \ 
+/mpbastudies3/181113\_Vincenza-Colonna/$namedir/$nameflgz1 \ 
+/mpbastudies3/181113\_Vincenza-Colonna/$namedir/$nameflgz2 | \ 
 /mpba0/mpba-sw/samtools view -b - > \
 /mpbastudies3/IMMA/samples/%$idsample.raw.bam
 %\end{verba
@@ -52,11 +52,21 @@ To find heteroplasmy in our saple, I used Mity.
 Mity can identify very low-heteroplasmy variants, even <1\% heteroplasmy when there is sufficient read-depth (eg >1000x). \newline
 
 \begin{verbatim}
-/lustrehome/giuliana/anaconda3/bin/mity call --reference hg38 \ --normalise /lustre/home/enza/grep/bam/$1.bam --out-folder-path \ /lustrehome/giuliana/mity/mitycall/ && touch \ /lustrehome/giuliana/error/$1.mitycall_ok \
+~/lustrehome/giuliana/anaconda3/bin/mity call --reference hg38 \
+--normalise /lustre/home/enza/grep/bam/$1.bam --out-folder-path \
+/lustrehome/giuliana/mity/mitycall/ && touch \
+/lustrehome/giuliana/error/$1.mitycall_ok \
+
 \end{verbatim}
-For use this command line is necessary the reference genome (hg38.p12) in fasta format and a BAM for each sample. \newline
+
+For use this command line is necessary the reference genome (hg38.p12) in fasta format and a BAM for each sample. 
+
+
 \begin{verbatim}
-/lustrehome/giuliana/anaconda3/bin/mity report \ /lustrehome/giuliana/mity/mitycall/$1.mity.vcf.gz --out-folder-path \ /lustrehome/giuliana/mity/mitycall/mityreport/ && touch \ /lustrehome/giuliana/error/$1.mitycall_ok \
+~/lustrehome/giuliana/anaconda3/bin/mity report \
+/lustrehome/giuliana/mity/mitycall/$1.mity.vcf.gz --out-folder-path
+/lustrehome/giuliana/mity/mitycall/mityreport/ && touch \
+/lustrehome/giuliana/error/$1.mitycall_ok \
 \end{verbatim}
 
 
@@ -71,10 +81,12 @@ Bgzip (\url{https://www.htslib.org/doc/bgzip.html#DESCRIPTION}) compresses files
 
 The command line take in input the output (VCF) from variant calling and give us the compressed file. \newline 
 
-%Tabix (\url{https://www.htslib.org/doc/tabix.html}) indexes a TAB-delimited genome position file in.tab.bgz and creates an index file.\newline
+Tabix (\url{https://www.htslib.org/doc/tabix.html}) indexes a
+TAB-delimited genome position file in.tab.bgz and creates an index file.\newline
 
-%\begin{verbatim}
-%~/bin/tabix -p vcf /mpbastudies3/IMMA/samples/vcf/${id}.${chr}.vcf.gz 
+\begin{verbatim}
+%~/bin/tabix -p vcf
+/mpbastudies3/IMMA/samples/vcf/${id}.${chr}.vcf.gz 
 %\end{verbatim}
 
 The command line take in input the compressed file from BGZIP and give the indexed one.\newline
@@ -91,7 +103,17 @@ Simply input the coordinates of your variants and the nucleotide changes to find
 \newline
 This software takes in input a final version of the VCF (filtered) and gives to us an annotated version with all the parameters written in the command-line. \newline
 
-\begin{verbatim} /bin/singularity exec -B /lustre/home/enza -B /lustrehome/giuliana /lustre/home/enza/biocontainers/vep100_CADD.img vep --af_1kg --af_gnomad --appris --biotype --buffer_size 5000 --check_existing --distance 5000 --fork 4 --minimal --polyphen b --pubmed --regulatory --sift b --species homo_sapiens --symbol --tsl --cache --dir_cache /lustre/home/enza/biocontainers/vepcache --offline --tab --variant_class -i /lustrehome/giuliana/mity/mitycall/mergedfrombam/ALL2.mity.vcf -o /lustrehome/giuliana/mity/mitycall/mergedfrombam/ALL2.mity.vep.tab
+\begin{verbatim} ~ /bin/singularity exec -B /lustre/home/enza -B   /lustrehome/giuliana
+/lustre/home/enza/biocontainers/vep100_CADD.img vep --af_1kg  /
+--af_gnomad --appris --biotype --buffer_size 5000 --check_existing
+/ --distance 5000 --fork 4 --minimal --polyphen b --pubmed
+--regulatory --sift b --species homo_sapiens --symbol --tsl --cache
+/ --dir_cache /lustre/home/enza/biocontainers/vepcache --offline /
+--tab  --variant_class -i
+/lustrehome/giuliana/mity/mitycall/mergedfrombam/ALL2.mity.vcf -o /lustrehome/giulian
+a/mity/mitycall/mergedfrombam/ALL2.mit
+y.vep.tab 
+
 \end{verbatim}\\
 
 
@@ -99,6 +121,10 @@ This software takes in input a final version of the VCF (filtered) and gives to 
 HaploGrep 2 supports the direct import of VCF files, one of the current standard formats for genetic data.
 Haplogrep requires Java 8 and works on Windows, Linux and Mac. and gives to us a text file with all the parameters written in the command line. \newline
 
-\begin{verbatim} java -jar haplogrep-2.1.25.jar --in /home/obilab/giuliana/samples_mt/ALLsamples.mity.filt.vcf.gz --format vcf --out ALLsamples_haplogroups.txt \end{verbatim}\\
+\begin{verbatim} 
+java -jar haplogrep-2.1.25.jar --in \
+/home/obilab/giuliana/samples_mt/ALLsamples.mity.filt.vcf.gz \
+--format vcf --out ALLsamples_haplogroups.txt \ \end{verbatim}
+\\
 \textbf{}
 
