@@ -470,9 +470,25 @@ The effect of mtDNA mutant heteroplasmy on phenotype is even more striking with 
 
 To evaluate heteroplasmy in my data, I used \textsc{Mity - report} (\cite{puttick2019mity}). The file I obtained contains several parameters for determining heteroplasmy. Among the parameters the more relvant is of course the genotype. I considered genotypes reported as 0/1 as heteroplasmic variants. Among these, the percentage of heteroplasmy, i.e. the ratio between allele 1 and 0, varies from a minimum of 0.000100  to a maximum of 0.999900. When considering this whole range \textsc{Mity - report} identified 231 heteroplasmic sites in six embryos, as shown in Figure \ref{fig:distributionHet99}. When restricting the range of the ratio between the two alleles to  > 0.01 and < 0.90 the number of variants diminish as explained in figure \ref{fig:distribution90} \\ 
 
-I have considered heteroplasmy in the four missense variants to determine any pathogenity linked to. (tab \ref{tab:missense}) \\
+I have considered heteroplasmy in the four missense variants to determine any pathogenity linked to. (tab \ref{tab:missense}) (tab\ref{tab:heteroplasmymissense}) \\
 
-
+{\small
+\begin{table}[H]
+\caption{Heteroplasmy in missense variants}
+\label{tab:heteroplasmymissense}
+\centering
+\begin{tabular}{c c c c }
+\toprule
+\tabhead{Variant} & \tabhead{Number of samples} & \tabhead{Min Heteroplasmy} &\tabhead{Max Heteroplasmy} \\
+\midrule 
+5374 & 5 & 0.0003 & 0.0156  \\
+8668 & 2 & 0.0001 & 0.9998  \\
+14447 & 6 & 0.0003 & 0.0287 \\ 
+14556 & 8 & 0.0003   & 0.0117\\
+\bottomrule\\
+\end{tabular}
+\end{table}
+}
 
 \begin{figure}[H]
 \centering
