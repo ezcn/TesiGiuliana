@@ -468,23 +468,23 @@ Mitochondrial heteroplasmy is defined as a dynamically determined co‐expressio
 Many of the pathogenic mtDNA mutations identified are heteroplasmic, especially the most severe ones. Heteroplasmic alleles can shift in percentage during both mitotic and meiotic cell division, this process is known as replicative segregation and could cause a potentially continuous array of bioenergetic defects. As the percentage of mutant mtDNAs increases, the resulting bioenergetic defect becomes increasingly severe. An example of the interaction between mtDNA heteroplasmy variation and phenotype was the report that the tRNA Lys nt 8344A.G  mutation that causes myoclonic epilepsy and ragged red fiber (MERRF) disease was heteroplasmic (\cite{wallace2013mitochondrial}). \\
 The effect of mtDNA mutant heteroplasmy on phenotype is even more striking with the tRNA Leu(UUR) mt 3243A.G mutation associated with mitochondrial encephalomyopathy, lactic acidosis, and stroke-like episodes (MELAS, \cite{goto2011dynamics}). When the heteroplasmy of this mutation is high, it can present as lethal childhood Leigh syndrome, MELAS, chronic progressive external ophthalmoplegia (CPEO),cardiomyopathy, migraines, diabetes mellitus, and deafness. In pedigrees with high heteroplasmy members, meiotic segregation of the mutant mtDNAs can result in the full range of phenotypes from asymptomatic to lethal disease (\cite{wallace2013mitochondrial}).\\
 
-To evaluate heteroplasmy in my data, I used \textsc{Mity - report} (\cite{puttick2019mity}). The file I obtained contains several parameters for determining heteroplasmy. Among the parameters the more relvant is of course the genotype. I considered genotypes reported as 0/1 as heteroplasmic variants. Among these, the percentage of heteroplasmy, i.e. the ratio between allele 1 and 0, varies from a minimum of 0.000100  to a maximum of 0.999900. When considering this whole range \textsc{Mity - report} identified 231 heteroplasmic sites in six embryos, as shown in Figure \ref{fig:distributionHet99}. When restricting the range of the ratio between the two alleles to  > 0.01 and < 0.90 the number of variants diminish as explained in figure \ref{fig:distribution90} \\ 
+To evaluate heteroplasmy in my data, I used \textsc{Mity - report} (\cite{puttick2019mity}). The file I obtained contains several parameters for determining heteroplasmy. Among the parameters the more relvant is of course the genotype. I considered genotypes reported as 0/1 as heteroplasmic variants. Among these, the percentage of heteroplasmy, i.e. the ratio between allele 1 and 0, varies from a minimum of 0.000100  to a maximum of 0.999900. When considering this whole range \textsc{Mity - report} identified 231 heteroplasmic sites in six embryos, as shown in Figure \ref{fig:distributionHet99}. When restricting the range of the ratio between the two alleles to  > 0.01 and < 0.90 the number of variants diminish as explained in figure \ref{fig:distribution90}. The sample AS054 has the highest number of heteroplasmic sites.  \\ 
 
-I have considered heteroplasmy in the four missense variants to determine any pathogenity linked to. (tab \ref{tab:missense}) (tab\ref{tab:heteroplasmymissense}) \\
+Table \ref{tab:heteroplasmymissense} shows the heteroplasmy range for the four missense variants classified ad deleterious by SIFT and PolyPhen (Table \ref{tab:missense}) supporting the hypothesis that they can actually be deleterious.  \\
 
 {\small
 \begin{table}[H]
 \caption{Heteroplasmy in missense variants}
 \label{tab:heteroplasmymissense}
 \centering
-\begin{tabular}{c c c c }
+\begin{tabular}{c c c c c}
 \toprule
-\tabhead{Variant} & \tabhead{Number of samples} & \tabhead{Min Heteroplasmy} &\tabhead{Max Heteroplasmy} \\
+\tabhead{Variant} & \tabhead{Symbol} & \tabhead{Number of samples} & \tabhead{Min Heteroplasmy} &\tabhead{Max Heteroplasmy} \\
 \midrule 
-5374 & 5 & 0.0003 & 0.0156  \\
-8668 & 2 & 0.0001 & 0.9998  \\
-14447 & 6 & 0.0003 & 0.0287 \\ 
-14556 & 8 & 0.0003   & 0.0117\\
+5374 & \textit{MT-ND2} & 5 & 0.0003 & 0.0156  \\
+8668 & \textit{MT-ATP6}  & 2 & 0.0001 & 0.9998  \\
+14447 & \textit{MT-ND6} & 6 & 0.0003 & 0.0287 \\ 
+14556 & \textit{MT-ND6} & 8 & 0.0003   & 0.0117\\
 \bottomrule\\
 \end{tabular}
 \end{table}
